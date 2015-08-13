@@ -1,7 +1,7 @@
 package com.doubleia.currency.chp4;
 
-import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
 
 @ThreadSafe
 public class SafePoint {

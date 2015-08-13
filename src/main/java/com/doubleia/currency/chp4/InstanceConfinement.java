@@ -3,8 +3,9 @@ package com.doubleia.currency.chp4;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
+
 
 /**
  * 

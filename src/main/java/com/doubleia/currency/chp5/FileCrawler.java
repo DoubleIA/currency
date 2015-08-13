@@ -13,11 +13,6 @@ import java.util.concurrent.BlockingQueue;
  */
 public class FileCrawler implements Runnable {
 
-	/**
-	 * 
-	 * 
-	 * 
-	 */
 	private final BlockingQueue<File> fileQueue;
 	
 	private final FileFilter fileFilter;
@@ -31,7 +26,11 @@ public class FileCrawler implements Runnable {
 	}
 	
 	public void run() {
-		
+		try {
+			crawl(root);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
 	}
 	
 	private void crawl(File root) throws InterruptedException {
@@ -47,6 +46,8 @@ public class FileCrawler implements Runnable {
 		}
 	}
 	
-	
-	
+    private boolean alreadyIndexed(File f) {
+        return false;
+    }
+
 }

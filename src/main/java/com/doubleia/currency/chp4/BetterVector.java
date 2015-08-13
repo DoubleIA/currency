@@ -2,7 +2,8 @@ package com.doubleia.currency.chp4;
 
 import java.util.Vector;
 
-import javax.annotation.concurrent.ThreadSafe;
+import net.jcip.annotations.ThreadSafe;
+
 
 /**
  * 
