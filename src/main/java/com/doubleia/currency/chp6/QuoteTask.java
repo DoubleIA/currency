@@ -1,9 +1,17 @@
 package com.doubleia.currency.chp6;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -71,7 +79,36 @@ public class QuoteTask implements Callable<TravelQuote>{
 			TravelInfo travelInfo, Set<TravelCompany> companies,
 			Comparator<TravelQuote> ranking, long time, TimeUnit unit
 			) throws InterruptedException {
+		ExecutorService exec = Executors.newCachedThreadPool();
+		
+		List<QuoteTask> tasks = new ArrayList<QuoteTask>();
+		for (TravelCompany company : companies) {
+			tasks.add(new QuoteTask(company, travelInfo));
+		}
+		
+		List<Future<TravelQuote>> futures = exec.invokeAll(tasks);
+		
+		List<TravelQuote> quotes = new ArrayList<TravelQuote>(tasks.size());
+		Iterator<QuoteTask> taskIter = tasks.iterator();
+		for (Future<TravelQuote> f : futures) {
+			QuoteTask task = taskIter.next();
+			try {
+				quotes.add(f.get());
+			} catch (ExecutionException e) {
+				quotes.add(task.getFailureQuote(e.getCause()));
+			} catch (CancellationException e) {
+				quotes.add(task.getTimeoutQuote(e.getCause()));
+			}
+		}
+		Collections.sort(quotes, ranking);
+		return quotes;
+	}
 
+	private TravelQuote getTimeoutQuote(Throwable cause) {
+		return null;
+	}
+
+	private TravelQuote getFailureQuote(Throwable cause) {
 		return null;
 	}
 	
